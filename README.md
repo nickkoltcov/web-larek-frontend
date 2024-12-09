@@ -88,257 +88,276 @@ EventEmitter реализует систему управления событи
 ##  Слой  Model 
 
 
-### класс DataCardsProduct хранит данные и работает с ними.
+### класс DataCardsProduct хранит данные продуктов и работает с ними.
 
--constructor - принимает инстант брокера событий.
+-constructor(event: IEvents) - принимает инстант брокера событий.
 
 #### Поля: 
 
-- productCards - хранит массив всех продуктов 
+- productCards: IProduct[] - хранит массив всех продуктов 
 
-- inspectionCard - выбраный продукт по id для подробного осмотра 
+- inspectionCard: id:string - выбраный продукт по id для подробного осмотра 
 
-- event - экземпляр класса EventEmitter для инициализации событий при изменении данных.
 
 #### Методы:
  
-- getProdut - метод позволяет получить прокукт по id 
+- getProdut(id:string) - метод позволяет получить прокукт по id 
 
-- checkProduct - метод проверяет добавлен товар в корзину или нет 
+- previewProduct(inspectionCard: id:string) - метод устанавливает данные выбраной карточки продукта 
 
 
 ### Класс CartModel работает и хранит  выбранный пользователем товар в корзине продуктов 
 
 #### Поля:
 
-- cartProdut - массив товаров выбранных пользователем 
+- cartProdut: TCart[] - массив товаров выбранных пользователем 
 
-- constructor - принимает инстант брокера событий.
+- constructor(event: IEvents) - принимает инстант брокера событий.
 
 #### Методы класса CartModel: 
 
-- getProducts - получаем массив выбранных продуктов 
+- getProducts(cartProdut: TCart[]) - получаем массив выбранных продуктов 
 
-- getIdAllProduct - получение id всех продуктов 
+- getIdAllProduct(id:string) - получение id всех продуктов 
  
-- totalSum - считает  общую цену всех продуктов 
+- totalSum(): number - считает  общую цену всех продуктов 
 
-- addProductCart - метод добавляет продукт в корзину
+- addProductCart():void - метод добавляет продукт в корзину
 
-- deleteProductCart - удаляет продукт из корзины 
+- deleteProductCart():void - удаляет продукт из корзины 
 
-- clearCart - очищает корзину 
+- clearCart():void - очищает корзину 
 
 
 ### Класс FormModel хранит и  работает с данными от пользователя 
 
-- constructor - принимает инстант брокера событий.
+- constructor(event: IEvents ) - принимает инстант брокера событий.
 
 #### Поля:
 
-- payment - информация о методе оплаты.
+- payment: string - информация о методе оплаты.
 
-- email - электронная почта пользователя.
+- email: string - электронная почта пользователя.
 
-- phone - номер телефона пользователя.
+- phone: number - номер телефона пользователя.
 
-- address - адрес пользователя.
+- address: string - адрес пользователя.
 
-- total - общая сумму заказа.
+- productCart:CartModel - количество товаров и их общая сумма 
 
-- formErrors - хранения ошибок валидации
+- formErrors: string - хранения ошибок валидации
 
 
 #### Методы класса FormModel:
 
-- getPaymentMethod - получает способ оплаты 
+- getPaymentMethod() - получает способ оплаты 
 
-- getAddresUser - получает адрес пользователя
+- getAddresUser() - получает адрес пользователя
 
-- validateAdress - проверяем поле адреса 
+- validateAdress() - проверяем поле адреса 
 
-- getDataUser - получаем  номер телефона и электронную почту
+- getDataUser() - получаем  номер телефона и электронную почту
 
-- validateContacts - провермяем поля с номером телефона и почтой
+- validateContacts() - провермяем поля с номером телефона и почтой
 
-- getOrden - получение всех данных заказа, формирует в обьект для отправки на сервер 
+- getOrden(payment: string, address: string, email: string,  phone: number,productCart:CartModel) - получение всех данных заказа для отправки на сервер 
 
 
 ## Слой  View 
 
 ### Класс Page отображает кнопку  корзины со счетчиком товаров и список карточке 
 
-- constructor принимает количество добавленных товаров в корзину и брокер событие
+- constructor(Cart: HTMLElement,totalProduct: HTMLElement,product: HTMLElement, events: IEvents) - принимает HTML-элемент  и брокер событие
 
 #### Поля:
 
-- Cart - кнопка корзины  
+- Cart: HTMLElement - кнопка корзины  
 
-- totalProduct - количество добавленных продуктов в корзину 
+- totalProduct: HTMLElement  - количество добавленных продуктов в корзину 
 
-- product - все карточки 
+- product: HTMLElement - все карточки 
 
 #### Методы:
 
-- renderCounter - отображает количество товаров в корзине 
+- renderCounter() - отображает количество товаров в корзине 
 
-- renderCards - отображает список карточек продуктов на странице 
+- renderCards() - отображает список карточек продуктов на странице 
 
 
 
 ### Класс Card отображает карточку товара на странице 
 
+- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+
 #### Поля:
 
-- category - категория продукта 
+- category: HTMLElement - категория продукта 
 
-- img - картинка продукта 
+- img: HTMLElement - картинка продукта 
 
-- title - названия товара 
+- title: HTMLElement - названия товара 
 
-- price - цена товара 
+- price: HTMLElement - цена товара 
 
 
 #### Методы:
 
-- cardCategory - устанавливает категорию карточки 
+- cardCategory() - устанавливает категорию карточки 
 
-- cardImg - устанавливает картинку карточки 
+- cardImg() - устанавливает картинку карточки 
 
-- cardText - устанавливает название карточки 
+- cardText() - устанавливает название карточки 
 
-- cardPrice - устанавливает цену карточки 
+- cardPrice() - устанавливает цену карточки 
 
-- renderCard - отображает полностью карточку 
+- renderCard() - отображает полностью карточку 
 
 
 ### Класс cardPreview наследует класс Card и выполняет отображения подробного описания карточки, и позволяет добавлять товар в корзину 
 
+- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+
 #### Поля: 
 
-- description - подробное описания карточки 
+- description: HTMLElement - подробное описания карточки 
 
-- buttonCard - кнопка добавления товара в корзину 
+- buttonCard: HTMLElement - кнопка добавления товара в корзину 
 
 #### Методы: 
 
-- renderCardPrevieW - отображает карточку товара в подробном осмотре 
+- renderCardPrevieW() - отображает карточку товара в подробном осмотре 
 
 
-### Класс ProductCart наследует класс cart отвечает за отображения продукта в корзине
+### Класс ProductCart  отвечает за отображения продукта в корзине
+
+- constructor(template: HTMLTemplateElement, events: IEvents) - принимает темплейт элемент и брокер событие 
 
 #### Поля:
 
-- cartItem - контейнер представляющий одни товар в корзине 
+- cartItem: HTMLElement - контейнер представляющий одни товар в корзине 
 
-- numberProduct - порядковый номер продукта 
+- numberProduct: HTMLElement - порядковый номер продукта 
 
-- buttonDellete - кнопка удаления продукта 
+- productText: HTMLElement - название товара 
+
+- productSum: HTMLElement - цена товара 
+
+- buttonDellete: HTMLElement - кнопка удаления продукта 
 
 #### Методы: 
 
-- renderProductCart - отображает товар в корзине 
+- renderProductCart() - отображает товар в корзине 
 
 
 ### Класс ModalWindow - отображает модальное окно, его можно закрывать и открывать с заданныи содержимым 
 
+- constructor(modalContainer: HTMLElement, events: IEvents) - принимает HTML-элемент и брокер событие
+
 #### Поля: 
 
-- modalContainer - контейнер модального окна 
+- modalContainer: HTMLElement - контейнер модального окна 
 
-- buttonModal - кнопка закрытия модального окна 
+- buttonModal: HTMLElement - кнопка закрытия модального окна 
 
-- contentModal - контейнер в которое будет загружаться содержимое 
+- contentModal: HTMLElement - контейнер в которое будет загружаться содержимое 
 
 #### Методы: 
 
-- openModal - открытие модального окна 
+- openModal() - открытие модального окна 
 
-- closeModal - закрытия модального окна 
+- closeModal() - закрытия модального окна 
 
-- getModalContent - устанавливает содержимое модального окна( у нас 5 разных отображений модальных окнон )
+- getModalContent() - устанавливает содержимое модального окна( у нас 5 разных отображений модальных окнон )
 
-- renderModal - отображаения модального окна 
+- renderModal() - отображаения модального окна 
 
-- resetModal - сбросить содержимого модального окна после закрытия
+- resetModal() - сбросить содержимого модального окна после закрытия
 
 
 ### Класс CartView - показывает список товара в самой корзине и итоговую стоймость 
 
+- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+
 #### Поля: 
 
-- cartList - отображения товаров в корзине 
+- cartList: HTMLElement - отображения товаров в корзине 
 
-- buttonCart - кнопка для оформления заказа 
+- buttonCart: HTMLElement - кнопка для оформления заказа 
 
-- cartTotal - общая стоймость всех продуктов 
+- cartTotal: HTMLElement - общая стоймость всех продуктов 
 
 #### Методы:
 
-- getItems -  устанавливает список товаров в корзине 
+- getItems() -  устанавливает список товаров в корзине 
 
-- renderTotalSum - отображает общую сумму товаров в корзине 
+- renderTotalSum() - отображает общую сумму товаров в корзине 
 
-- renderCart - отображает корзину 
+- renderCart() - отображает корзину 
 
 
 ### Класс FormOrder - управляет отображением окна способа оплаты и адреса доставки, позволяет принять от пользователя способ оплаты и адрес доставки 
 
+- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+
 #### Поля: 
 
-- formOrder -  форма способа оплаты/адреса доставки 
+- formOrder: HTMLElement -  форма способа оплаты/адреса доставки 
 
-- buttonOnline - кнопка онлайн
+- buttonOnline: HTMLElement - кнопка онлайн
 
-- buttonReceiving - кнопка при получении 
+- buttonReceiving: HTMLElement - кнопка при получении 
 
--inputAddres - поле ввода  адреса доставки
+- inputAddres: HTMLElement - поле ввода  адреса доставки
 
-- formErrors - элемент, в котором будет отображаться ошибка формы 
+- formErrors: HTMLElement - элемент, в котором будет отображаться ошибка формы 
 
 
 #### Методы:
 
-- checkValid - устанавливает , доступна ли кнопка далее
+- checkValid() - устанавливает , доступна ли кнопка далее
 
-- renderFormOrder - отображает форму способа оплаты и адреса доставки 
+- renderFormOrder() - отображает форму способа оплаты и адреса доставки 
 
 
 ### Класс FormContacts - управляет отображением окна контакты, позволяет принять от пользователя электронную почту и номер телефона 
 
+- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+
 #### Поля: 
 
-- formContact - форма контактов 
+- formContact: HTMLElement - форма контактов 
 
-- inputEmail - поле ввода электронной почты 
+- inputEmail: HTMLElement - поле ввода электронной почты 
 
-- inputNimberPhone - поле ввода номера телефона 
+- inputNimberPhone: HTMLElement - поле ввода номера телефона 
 
-- buttonPay - кнопка оплатить заказ
+- buttonPay: HTMLElement - кнопка оплатить заказ
 
-- formErrors - элемент, в котором будет отображаться ошибка формы
+- formErrors: HTMLElement - элемент, в котором будет отображаться ошибка формы
 
 
 #### Методы:
 
-- renderFormContacts - отображает форму 
+- renderFormContacts() - отображает форму 
 
 
 ### Класс OrderSuccess отображает сообщение об успешном оформлении заказа 
 
+- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+
 #### Поля: 
 
-- success - контейнер успешного заказа 
+- success: HTMLElement - контейнер успешного заказа 
 
-- imgSuccess - картинка (галочка)
+- imgSuccess: HTMLElement - картинка (галочка)
 
-- description - отображения текса что заказ выполнин и сколько было списанно синапсов 
+- description: HTMLElement - отображения текса что заказ выполнин и сколько было списанно синапсов 
 
-- buttonSuccess - кнопка за новыми покупками 
+- buttonSuccess: HTMLElement - кнопка за новыми покупками 
 
 #### Методы:
 
-- renderOrderSuccess - отображает окно с успешным выполненым заказом 
+- renderOrderSuccess() - отображает окно с успешным выполненым заказом 
 
 
 ## Слой Presenter 

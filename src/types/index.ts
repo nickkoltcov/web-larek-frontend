@@ -32,4 +32,9 @@ type TFormPaymethodAddress = Pick<IOrden, 'payment' | 'address' >;
 type TFormContact = Pick<IOrden, 'email' | 'phone'>;
 
 // данные которые будут использованы в корзине 
-type TCurt = Pick<IProduct, 'id' | 'title' | 'price'>;
+type TCart = Pick<IProduct, 'id' | 'title' | 'price'>;
+
+interface ICart {
+    cartProdut: TCart[];
+    totalSum: number;   
+}
