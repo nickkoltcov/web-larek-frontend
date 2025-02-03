@@ -6,6 +6,8 @@
 - src/ — исходные файлы проекта
 - src/components/ — папка с JS компонентами
 - src/components/base/ — папка с базовым кодом
+- src/components/Model/ - папка с моделими 
+- src/components/View - папка с классами отображения 
 
 Важные файлы:
 - src/pages/index.html — HTML-файл главной страницы
@@ -55,8 +57,7 @@ yarn build
 ## Базовые классы 
 
 
-### Класс Api  
-Api нужен для работы с запросами к серверу
+### Класс Api нужен для работы с запросами к серверу
 
 #### Методы класса Api:
 
@@ -67,308 +68,303 @@ Api нужен для работы с запросами к серверу
 - post- служит для выполнения POST- запроса, затем обрабатывается ответ через handleresponse
 
 
-### Класс EventEmitter 
-EventEmitter реализует систему управления событиями и используется в presenter 
+### Класс EventEmitter реализует систему управления событиями и используется в presenter 
 
 #### Методы класса EventEmitter:
 
 - on: Метод для подписки на событие. Если событие еще не зарегистрировано, оно добавляется в карту, и затем переданный колбек добавляется в набор подписчиков для этого события.
 
-- off: Метод для отмены подписки на событие. Удаляет указанный колбек из набора подписчиков для данного события. Если набор подписчиков становится пустым, событие удаляется из карты.
-
 - emit: Метод для генерации события. Он проходит по всем зарегистрированным событиям и вызывает колбеки для тех, которые соответствуют заданному названию события. Если событие соответствует шаблону (например, регулярному выражению), все соответствующие колбеки будут вызваны.
 
-- onAll: Метод для подписки на все события. Позволяет слушать все события, используя специальное название "*".
 
-- offAll: Метод для сброса всех обработчиков событий. Он очищает карту _events, удаляя все подписки.
+### Класс Component является абстрактным классом, в котором реализованны базовые элементы 
 
-- trigger: Метод, который создает колбек, генерирующий событие при вызове. Этот колбек объединяет переданные данные с контекстом и вызывает метод emit.
+- constructor(container: HTMLElement) - принимает HTML - элемент
 
+#### Метоты:
+
+- toggleClass - Переключить класс
+
+- setText - Установить текстовое содержимое
+
+- setImage - Установить изображение с алтернативным текстом
+
+- render - Возвращает корневой DOM-элемент
+
+
+### Класс ApiRequest наследуется от класса api, взаимодействует с сервером 
+
+- constructor(cdn: string, baseUrl: string, options?: RequestInit)  принимает базовый URL CDN для добавления к изображениям продуктов,базовый URL API
+
+#### Поля:
+
+cdn: string - хранит URL-адрес
+
+#### Метоты:
+
+-  getProduct(): Promise<IProduct[]> - получает список продуктов с сервера
+
+- orderPost(order: IOrder): Promise<IOrderResult> - отправляет данные заказа на сервер
 
 ##  Слой  Model 
 
 
 ### класс DataCardsProduct хранит данные продуктов и работает с ними.
 
--constructor(event: IEvents) - принимает инстант брокера событий.
+- constructor(event: IEvents) - принимает инстант брокера событий.
 
 #### Поля: 
 
 - productCards: IProduct[] - хранит массив всех продуктов 
 
-- inspectionCard: id:string - выбраный продукт по id для подробного осмотра 
+- preview: IProduct - выбраный продукт для подробного осмотра 
 
 
 #### Методы:
  
-- getProdut(id:string) - метод позволяет получить прокукт по id 
+- setProducts(productCards: IProduct[]) - сохраняет массив продуктов с сервера 
 
-- previewProduct(inspectionCard: id:string) - метод устанавливает данные выбраной карточки продукта 
+- getproducts(): IProduct[] - возвращает массив продуктов 
+
+- setPreview(item: IProduct) -  устанавливает данные выбраной карточки продукта 
 
 
 ### Класс CartModel работает и хранит  выбранный пользователем товар в корзине продуктов 
 
 #### Поля:
 
-- cartProdut: TCart[] - массив товаров выбранных пользователем 
+- cartCatalog: IProduct[] ; - массив товаров выбранных пользователем 
 
 - constructor(event: IEvents) - принимает инстант брокера событий.
 
 #### Методы класса CartModel: 
 
-- getProducts(cartProdut: TCart[]) - получаем массив выбранных продуктов 
+- setProduct(item:IProduct) - сохраняет выбраный продукт в массив  
 
-- getIdAllProduct(id:string) - получение id всех продуктов 
+- getProductsCart(): IProduct[] - получаем массив выбранных продуктов 
+
+- deleteProductCart(item:IProduct) - удаляем выбранный продукт по id
  
-- totalSum(): number - считает  общую цену всех продуктов 
+- totalPrice(): number - считает  общую цену всех продуктов 
 
-- addProductCart():void - метод добавляет продукт в корзину
+- getItems() - получаем id продуктов в корзине 
 
-- deleteProductCart():void - удаляет продукт из корзины 
+- inBasket(item: IProduct): boolean - проверяем находится ли товар в козине 
 
-- clearCart():void - очищает корзину 
+- clearCart() - очищает корзину 
 
 
-### Класс FormModel хранит и  работает с данными от пользователя 
+### Класс FormModel получает данные и проверяет их 
 
 - constructor(event: IEvents ) - принимает инстант брокера событий.
 
 #### Поля:
 
-- payment: string - информация о методе оплаты.
+- order: IOrderForm - объект данных со способ оплаты, адресом доставки, телефоном и емейлом
 
-- email: string - электронная почта пользователя.
-
-- phone: number - номер телефона пользователя.
-
-- address: string - адрес пользователя.
-
-- productCart:CartModel - количество товаров и их общая сумма 
-
-- formErrors: string - хранения ошибок валидации
-
+- formErrors: FormErrors : объект с ошибками форм.
 
 #### Методы класса FormModel:
 
-- getPaymentMethod() - получает способ оплаты 
+- setContactField - устанавливает и проверяет поля телефона и емеила
 
-- getAddresUser() - получает адрес пользователя
-
-- validateAdress() - проверяем поле адреса 
-
-- getDataUser() - получаем  номер телефона и электронную почту
-
-- validateContacts() - провермяем поля с номером телефона и почтой
-
-- getOrden(payment: string, address: string, email: string,  phone: number,productCart:CartModel) - получение всех данных заказа для отправки на сервер 
+- setOrderField - устанавливает и проверяет способ оплаты и адрес доставки 
 
 
 ## Слой  View 
 
-### Класс Page отображает кнопку  корзины со счетчиком товаров и список карточке 
+### Класс Page наследуется от базового абстракного класса Component, отображает каталог товаров на странице и счетчик количество товаров в корзине 
 
-- constructor(Cart: HTMLElement,totalProduct: HTMLElement,product: HTMLElement, events: IEvents) - принимает HTML-элемент  и брокер событие
-
-#### Поля:
-
-- Cart: HTMLElement - кнопка корзины  
-
-- totalProduct: HTMLElement  - количество добавленных продуктов в корзину 
-
-- product: HTMLElement - все карточки 
-
-#### Методы:
-
-- renderCounter() - отображает количество товаров в корзине 
-
-- renderCards() - отображает список карточек продуктов на странице 
-
-
-
-### Класс Card отображает карточку товара на странице 
-
-- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+- constructor(container: HTMLElement, evenst:IEvents) - принимает HTML-элемент  и брокер событие
 
 #### Поля:
 
-- category: HTMLElement - категория продукта 
+- productContener: HTMLElement - контейнер для карточек 
 
-- img: HTMLElement - картинка продукта 
+- elementbasketCounter: HTMLElement - счетчик товаров в корзине 
 
-- title: HTMLElement - названия товара 
+- cartButton: HTMLButtonElement - кнопка корзины
 
-- price: HTMLElement - цена товара 
-
+- pege: HTMLElement - обертка страницы 
 
 #### Методы:
 
-- cardCategory() - устанавливает категорию карточки 
+- set productList(products: HTMLElement[]) - устанавливаем содержания галереи продуктов
 
-- cardImg() - устанавливает картинку карточки 
+- set basketCounter - устанавливаем содержания галереи продуктов 
 
-- cardText() - устанавливает название карточки 
+- set locked - управляем блокировкой страницы при открытом модальном окне 
 
-- cardPrice() - устанавливает цену карточки 
+### Класс Card наследуется от базового абстракного класса Component, отображает карточку товара на странице 
 
-- renderCard() - отображает полностью карточку 
-
-
-### Класс cardPreview наследует класс Card и выполняет отображения подробного описания карточки, и позволяет добавлять товар в корзину 
-
-- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
-
-#### Поля: 
-
-- description: HTMLElement - подробное описания карточки 
-
-- buttonCard: HTMLElement - кнопка добавления товара в корзину 
-
-#### Методы: 
-
-- renderCardPrevieW() - отображает карточку товара в подробном осмотре 
-
-
-### Класс ProductCart  отвечает за отображения продукта в корзине
-
-- constructor(template: HTMLTemplateElement, events: IEvents) - принимает темплейт элемент и брокер событие 
+- constructor(container:HTMLElement, actions?: Actions) - принимает Темплейт элемент и устанавливает обработчик события на контейнеры 
 
 #### Поля:
 
-- cartItem: HTMLElement - контейнер представляющий одни товар в корзине 
+- cardCategory: HTMLElement - категория продукта 
 
-- numberProduct: HTMLElement - порядковый номер продукта 
+- cardTitle: HTMLElement - названия продукта 
 
-- productText: HTMLElement - название товара 
+- cardImg: HTMLElement - картинка продукта 
 
-- productSum: HTMLElement - цена товара 
+- cardPrice: HTMLElement - цена товара 
 
-- buttonDellete: HTMLElement - кнопка удаления продукта 
+- cardId: string - id карточки 
+
+
+#### Методы:
+
+- set category(value:string) - устанавливает категорию карточки 
+
+- set title(value:string) - устанавливает название карточки
+
+- set image(value:string) - устанавливаем картинку 
+
+- set price - устанавливаем цену
+
+- set id - устанавливаем id продукта
+
+
+### Класс CardPreview наследует класс Card и выполняет отображения подробного описания карточки, и позволяет добавлять товар в корзину 
+
+- constructor(container: HTMLElement,actions?: Actions) - принимает Темплейт элемент и устанавливает обработчик события на кнопки 
+
+#### Поля: 
+
+- cardDescription: HTMLElement - подробное описания карточки 
+
+- cardButton: HTMLButtonElement - кнопка добавления товара в корзину 
 
 #### Методы: 
 
-- renderProductCart() - отображает товар в корзине 
+- set description(value: string) - // устанавливаем подробное описания продукта
+
+- updateButtonState(productBasket: boolean, price: number): void - // обновления состояния кнопки и ее текста 
 
 
-### Класс ModalWindow - отображает модальное окно, его можно закрывать и открывать с заданныи содержимым 
+### Класс CartProduct наследует класс Card и выполняет отображения товара в корзине 
 
-- constructor(modalContainer: HTMLElement, events: IEvents) - принимает HTML-элемент и брокер событие
+- constructor(container:HTMLElement, actions?: Actions) - принимает Темплейт элемент и устанавливает обработчик события на кнопки 
 
-#### Поля: 
+#### Поля:
 
-- modalContainer: HTMLElement - контейнер модального окна 
-
-- buttonModal: HTMLElement - кнопка закрытия модального окна 
-
-- contentModal: HTMLElement - контейнер в которое будет загружаться содержимое 
+- cartIndex: HTMLElement - порядковый номер продукта в корзине 
 
 #### Методы: 
 
-- openModal() - открытие модального окна 
-
-- closeModal() - закрытия модального окна 
-
-- getModalContent() - устанавливает содержимое модального окна( у нас 5 разных отображений модальных окнон )
-
-- renderModal() - отображаения модального окна 
-
-- resetModal() - сбросить содержимого модального окна после закрытия
+- set index(value:string) - устанавливаем порядковый номер в корзине
 
 
-### Класс CartView - показывает список товара в самой корзине и итоговую стоймость 
+### Класс Modal  наследуется от базового абстракного класса Component  отображает модальное окно, его можно закрывать и открывать с заданныи содержимым 
 
-- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+- constructor(container: HTMLElement, protected events:IEvents) - принимает HTML-элемент и брокер событие
 
 #### Поля: 
 
-- cartList: HTMLElement - отображения товаров в корзине 
+- closeButton: HTMLButtonElement - кнопка закрытия модального окна 
 
-- buttonCart: HTMLElement - кнопка для оформления заказа 
+- contentElement: HTMLElement - контейнер в которое будет устанавливаться содержимое  
 
-- cartTotal: HTMLElement - общая стоймость всех продуктов 
+#### Методы: 
 
-#### Методы:
+- set content (value: HTMLElement) - устанавливаем содержания модального окна 
 
-- getItems() -  устанавливает список товаров в корзине 
+- open() - открытие модального окна 
 
-- renderTotalSum() - отображает общую сумму товаров в корзине 
+- close() - закрытия модального окна 
 
-- renderCart() - отображает корзину 
-
-
-### Класс FormOrder - управляет отображением окна способа оплаты и адреса доставки, позволяет принять от пользователя способ оплаты и адрес доставки 
-
-- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
-
-#### Поля: 
-
-- formOrder: HTMLElement -  форма способа оплаты/адреса доставки 
-
-- buttonOnline: HTMLElement - кнопка онлайн
-
-- buttonReceiving: HTMLElement - кнопка при получении 
-
-- inputAddres: HTMLElement - поле ввода  адреса доставки
-
-- formErrors: HTMLElement - элемент, в котором будет отображаться ошибка формы 
+- render(data: IModal): HTMLElement - для рендера модального окна 
 
 
-#### Методы:
+### Класс CartView  наследуется от базового абстракного класса Component отображает список товара в корзине и общую цену продуктов 
 
-- checkValid() - устанавливает , доступна ли кнопка далее
-
-- renderFormOrder() - отображает форму способа оплаты и адреса доставки 
-
-
-### Класс FormContacts - управляет отображением окна контакты, позволяет принять от пользователя электронную почту и номер телефона 
-
-- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+- constructor(container:HTMLElement, protected events:IEvents) - принимает Темплейт элемент и брокер событие
 
 #### Поля: 
 
-- formContact: HTMLElement - форма контактов 
+- cartList:HTMLElement; - список товаров в корзине  
 
-- inputEmail: HTMLElement - поле ввода электронной почты 
+- totalPrice:HTMLElement; - общая цена продуктов  
 
-- inputNimberPhone: HTMLElement - поле ввода номера телефона 
-
-- buttonPay: HTMLElement - кнопка оплатить заказ
-
-- formErrors: HTMLElement - элемент, в котором будет отображаться ошибка формы
-
+- designButton: HTMLButtonElement; - кнопка для оформления заказа  
 
 #### Методы:
 
-- renderFormContacts() - отображает форму 
+- set cartProducts(cartProducts: HTMLElement[]) -  устанавливаем товар в лист корзины или если она пустая устанавливаем текст что корзина пуста и блокируем кнопку если цена корзины = 0 
+
+- set total (value:number) - устанавливаем общую цену 
 
 
-### Класс OrderSuccess отображает сообщение об успешном оформлении заказа 
+### Класс Form наследуется от  базового абстракного класса Component, управляет формами,облегчает обработку ввода данных,управление состоянием формы, отображает ошибки валидации 
 
-- constructor(template: HTMLTemplateElement, events: IEvents) - принимает Темплат элемент и брокер событие
+
+- constructor(protected container: HTMLFormElement, protected events: IEvents) принимает HTMLFormElement и брокер событие
+
 
 #### Поля: 
 
-- success: HTMLElement - контейнер успешного заказа 
+- _submit: HTMLButtonElement : кнопка отправки формы
 
-- imgSuccess: HTMLElement - картинка (галочка)
-
-- description: HTMLElement - отображения текса что заказ выполнин и сколько было списанно синапсов 
-
-- buttonSuccess: HTMLElement - кнопка за новыми покупками 
+- _errors: HTMLElement : Элемент для отображения ошибок формы
 
 #### Методы:
 
-- renderOrderSuccess() - отображает окно с успешным выполненым заказом 
+- onInputChange(field: keyof T, value: string): void - обрабатывает изменения ввода и генерирует событие с именем поля и его значением
+
+- set valid(value: boolean) - устанавливает состояние валидности формы
+
+- set errors(value: string) - устанавливает сообщение об ошибке
+
+- render(state: Partial<T> & IFormState) - Отображает форму с заданным состоянием. Состояние может включать валидный статус, сообщения об ошибках и значения полей ввода.
+
+### Класс FormOrder - наследуется от класса Form, отображает форму заказа с выбором способа оплаты и указанием адресса 
+
+- constructor(container: HTMLFormElement, events:IEvents) - принимает Темплейт элемент и брокер событие
+
+#### Поля: 
+
+- payCard: HTMLButtonElement - кнопка оплата картой 
+
+- payCash: HTMLButtonElement - кнопка оплата наличкой 
+
+
+#### Методы:
+
+- set paymentMethod(value:string) - отвечает за обновление классов кнопок в зависимости от выбранного метода оплаты 
+
+- set address(value: string) - устанавливает значение в поля ввода для адреса 
+
+
+### Класс FormContacts наследуется от класса Form, отображает форму заказа для указания пользователем его контактных данных 
+
+- constructor(container: HTMLFormElement, events: IEvents) - принимает Темплат элемент и брокер событие
+
+
+#### Методы:
+
+- set phone(value: string) - устанавливает значение в поля ввода для номера телефона 
+
+- set email(value: string) - устанавливает значение в поля ввода для емеила 
+
+### Класс Success отображает сообщение об успешном оформлении заказа 
+
+- constructor(container:HTMLElement, actions: ISuccessActions) - принимает Темплейт элемент и устанавливает обработчик события
+
+#### Поля: 
+
+- closeButton: HTMLButtonElement - кнопка закрытия 
+
+- total:HTMLElement - сколько списано синапсов 
+
+#### Методы:
+
+- set totalprice(value: string) - устанавливает сколько было списанно синапсов 
 
 
 ## Слой Presenter 
 
-### класс ApiRequest принимает в конструктор экземпляр класса Api и предоставляет методы работы с бэкендом 
 
 #### Взаимоействие компонентов
 Код, описывающий взаимодействие представления и данных между собойнаходится в файле index.ts, выполняющем роль презентера.\
 Взаимодействие осуществляется за счет событий генерируемых с помощью брокера событий и обработчиков этих событий, описанных в index.ts.\
 В index.ts сначала создаются экземпляры всех необходимых классов, а затем настраивается обработка событий.\
-
-## UML - схема 
-
-![UML - схема](/src/images/UML.png)

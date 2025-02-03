@@ -1,6 +1,7 @@
 // интерфейс продукта 
 
-interface IProduct {
+export interface IProduct {
+    index?:string;
     id: string;
 	description: string;
 	image: string;
@@ -9,32 +10,44 @@ interface IProduct {
 	price: number;
 }
 
+
+
+
 // интерфейс полей формы 
 
-interface IOrden {
-    payment: string;
+export interface IOrder {
+    payment: PayMethod
     address: string;
     email: string;
-    phone: number;
+    phone: string;
+    items : string []
     total: number;
-    items: string;
+}
+
+export interface IOrderForm  {
+    payment: PayMethod | null;
+    address: string;
+    email: string;
+    phone: string;
+}
+
+export interface IPayForm {
+   address:string;
+   payment:'online' | 'offline'
+}
+
+export interface IContactForm {
+    email: string;
+    phone: string;
+}
+
+export type PayMethod = 'online' | 'offline'
+
+export type FormErrors = Partial<Record<keyof IOrderForm, string>>;
+
+export interface IOrderResult {
+    id: string;
+    total: number;
 }
 
 
-// данные продукта которые используется в детальном осмотре продукта 
-
-type TCard = Pick<IProduct, 'description'| 'image' | 'category' | 'title' |'price'>;
-
-// данные которые используется в форме выбора оплаты и адреса доставки 
-type TFormPaymethodAddress = Pick<IOrden, 'payment' | 'address' >;
-
-// данные которые используется в форме заполнения номера телефона и эмаила 
-type TFormContact = Pick<IOrden, 'email' | 'phone'>;
-
-// данные которые будут использованы в корзине 
-type TCart = Pick<IProduct, 'id' | 'title' | 'price'>;
-
-interface ICart {
-    cartProdut: TCart[];
-    totalSum: number;   
-}
