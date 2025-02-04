@@ -14,16 +14,14 @@ export class FormOrden extends Form<IPayForm> {
         super(container,events)
 
 
-        this.payCard = ensureElement('.button_alt[name = card',this.container) as HTMLButtonElement;
+        this.payCard = ensureElement('.button_alt[name = card]',this.container) as HTMLButtonElement;
         this.payCash = ensureElement('.button_alt[name = cash]',this.container) as HTMLButtonElement;
 
         this.payCard.addEventListener('click', () => {
-            this.paymentMethod = 'online';
 			this.onInputChange('payment', 'online');
         })
 
         this.payCash.addEventListener('click', () => {
-            this.paymentMethod = 'offline';
 			this.onInputChange('payment', 'offline');
         })
     }

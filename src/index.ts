@@ -8,7 +8,7 @@ import { EventEmitter } from './components/base/events';
 import { Page } from './components/View/Page';
 import { CardPreview } from './components/View/cardPreview';
 import { Modal } from './components/View/Modal';
-import { IContactForm, IPayForm, IProduct } from './types';
+import { IContactForm, IOrderForm, IPayForm, IProduct } from './types';
 import { CartModel } from './components/Model/CartModel';
 import { CartView } from './components/View/CartView';
 import { CartProduct } from './components/View/cartProduct';
@@ -42,7 +42,7 @@ const page = new Page(document.body, events)// главная страница
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events)// модальное окно 
 
 
-
+const success = new Success(cloneTemplate(successTemplete), { onClick: () => { modal.close()}});// окно успешного заказа
 const cart = new CartView(cloneTemplate(cartTemplete), events);// корзина 
 const order = new FormOrden(cloneTemplate(formOrdenTemplete), events)// форма способа оплаты и адресса 
 const contacts = new FormContact (cloneTemplate(formContactTemplete), events) // форма контактных данных 
@@ -192,6 +192,11 @@ events.on(/^order\..*:change/, (data: { field: keyof IPayForm, value: string }) 
   formModel.setOrderField(data.field, data.value);
 });
 
+// способ оплаты 
+events.on('order:paymentUpdated', (paymentData: IOrderForm) => {
+  order.paymentMethod = paymentData.payment;
+});
+
 
 // отправка заказа на сервер 
 events.on('contacts:submit', () => {
@@ -206,11 +211,16 @@ events.on('contacts:submit', () => {
 
   api.orderPost(order)
     .then(data => {
-      const success = new Success(cloneTemplate(successTemplete), { onClick: () => {modal.close(); cartModel.clearCart(); }});
-      success.totalprice = data.total.toString();
-      modal.render({ content: success.render({}) });
+      success.totalprice = data.total.toString(); 
+      modal.render({ content: success.render({})});
+      cartModel.clearCart()
+      formModel.clearForm()
     })
     .catch(err => {
       console.error(err);
     });
+});
+
+
+events.on('form:cleared', () => {
 });

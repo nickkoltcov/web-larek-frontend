@@ -106,6 +106,28 @@ cdn: string - хранит URL-адрес
 
 - orderPost(order: IOrder): Promise<IOrderResult> - отправляет данные заказа на сервер
 
+
+### Класс CardBase наследуется от базового абстракного класса Component, является базовым классом для карточки, в котором есть общий функцианал для всех наследников 
+
+constructor(container:HTMLElement) - принимает HTML - элемент
+
+#### Поля:
+
+- cardTitle: HTMLElement - названия продукта
+
+- cardPrice: HTMLElement - цена товара
+
+- cardId: string - id карточки 
+
+#### Методы:
+
+- set title(value:string) - устанавливает название карточки
+
+- set price - устанавливаем цену
+
+- set id - устанавливаем id продукта
+
+
 ##  Слой  Model 
 
 
@@ -166,9 +188,19 @@ cdn: string - хранит URL-адрес
 
 #### Методы класса FormModel:
 
-- setContactField - устанавливает и проверяет поля телефона и емеила
+- setContactField(field: keyof IContactForm, value: string) - устанавливает значение и запускает валидацию 
 
-- setOrderField - устанавливает и проверяет способ оплаты и адрес доставки 
+- validateContact() - проверяет контактные данные на корректность
+
+- setOrderField(field: keyof IPayForm, value: string) - устанавливает значение и запускает валидацию 
+
+- setPaymethod - устанавливает способ оплаты, после обновления отправляет событие 
+
+для уведомления других компонентов об изминении 
+
+- validateOrder() - проверяет данные заказа на корректность
+
+- clearForm() - очищает форму 
 
 
 ## Слой  View 
@@ -195,7 +227,7 @@ cdn: string - хранит URL-адрес
 
 - set locked - управляем блокировкой страницы при открытом модальном окне 
 
-### Класс Card наследуется от базового абстракного класса Component, отображает карточку товара на странице 
+### Класс Card наследуется от базового класса CardBase, отображает карточку товара на странице 
 
 - constructor(container:HTMLElement, actions?: Actions) - принимает Темплейт элемент и устанавливает обработчик события на контейнеры 
 
@@ -203,26 +235,16 @@ cdn: string - хранит URL-адрес
 
 - cardCategory: HTMLElement - категория продукта 
 
-- cardTitle: HTMLElement - названия продукта 
-
 - cardImg: HTMLElement - картинка продукта 
-
-- cardPrice: HTMLElement - цена товара 
-
-- cardId: string - id карточки 
+ 
 
 
 #### Методы:
 
 - set category(value:string) - устанавливает категорию карточки 
 
-- set title(value:string) - устанавливает название карточки
-
 - set image(value:string) - устанавливаем картинку 
 
-- set price - устанавливаем цену
-
-- set id - устанавливаем id продукта
 
 
 ### Класс CardPreview наследует класс Card и выполняет отображения подробного описания карточки, и позволяет добавлять товар в корзину 
@@ -242,13 +264,15 @@ cdn: string - хранит URL-адрес
 - updateButtonState(productBasket: boolean, price: number): void - // обновления состояния кнопки и ее текста 
 
 
-### Класс CartProduct наследует класс Card и выполняет отображения товара в корзине 
+### Класс CartProduct наследуется от базового класса CardBase и выполняет отображения товара в корзине 
 
 - constructor(container:HTMLElement, actions?: Actions) - принимает Темплейт элемент и устанавливает обработчик события на кнопки 
 
 #### Поля:
 
 - cartIndex: HTMLElement - порядковый номер продукта в корзине 
+
+- deleteButton: HTMLButtonElement; - кнопка удаления 
 
 #### Методы: 
 

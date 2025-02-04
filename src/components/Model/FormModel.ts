@@ -45,6 +45,7 @@ export class FormModel {
 
   setPaymethod(method: PayMethod ) {
     this.order.payment = method
+    this.events.emit('order:paymentUpdated', this.order);
   }
 
   validateOrder() {
@@ -58,6 +59,18 @@ export class FormModel {
     this.formErrors = errors;
     this.events.emit('formErrors:change', this.formErrors);
     return Object.keys(errors).length === 0;
+  }
+
+  clearForm(){
+    this.order = {
+      payment: null,
+      address: '',
+      email: '',
+      phone: '',
+    };
+    this.formErrors = {};
+    this.events.emit('form:cleared')
+    this.events.emit('order:paymentUpdated', this.order);
   }
   
 }

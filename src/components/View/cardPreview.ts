@@ -13,7 +13,7 @@ export class CardPreview extends Card {
 
     constructor (container: HTMLElement,actions?: Actions) {
         super(container)
-        this.cardDescription = container.querySelector(".card__text");
+        this.cardDescription = ensureElement(".card__text", this.container);
         this.cardButton = ensureElement(".card__button", this.container) as HTMLButtonElement;
 
         if (actions?.onClick) { 

@@ -1,5 +1,5 @@
 import { ensureElement } from "../../utils/utils";
-import { Card } from "./Card";
+import { CardBase } from "../base/Cardbase";
 
 
 interface Actions {
@@ -7,7 +7,7 @@ interface Actions {
 }
 
 
-export class CartProduct extends Card {
+export class CartProduct extends CardBase {
 
     protected cartIndex: HTMLElement;
     protected deleteButton: HTMLButtonElement;

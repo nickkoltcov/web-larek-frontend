@@ -1,6 +1,5 @@
-import { IProduct } from "../../types";
 import { ensureElement } from "../../utils/utils";
-import { Component } from "../base/Component";
+import { CardBase } from "../base/Cardbase";
 
 
 const cardCategoryColor:{[key: string]: string} = {
@@ -15,20 +14,16 @@ interface Actions {
     onClick: (event: MouseEvent) => void;
 }
 
-export class Card extends Component<IProduct> {
+export class Card extends CardBase {
     protected cardCategory: HTMLElement;
-    protected cardTitle: HTMLElement;
     protected cardImg: HTMLImageElement;
-    protected cardPrice: HTMLElement;
     protected cardId: string;
 
 
     constructor(container:HTMLElement, actions?: Actions) {
         super(container);
-        this.cardCategory = container.querySelector('.card__category');
-        this.cardTitle = ensureElement('.card__title', this.container);
-        this.cardImg = container.querySelector('.card__image');
-        this.cardPrice = ensureElement('.card__price', this.container);
+        this.cardCategory = ensureElement('.card__category', this.container) ;
+        this.cardImg = ensureElement('.card__image', this.container) as HTMLImageElement;
 
         if (actions?.onClick) { 
             container.addEventListener('click', actions.onClick);
@@ -42,26 +37,10 @@ export class Card extends Component<IProduct> {
         this.cardCategory.classList.add(cardCategoryColor[value])
     }
 
-    // устанавливаем текст 
-    set title(value:string) {
-        this.setText(this.cardTitle, value);
-    }
 
     // устанавливаем картинку 
     set image(value:string) {
         this.setImage(this.cardImg, value);
-    }
-
-
-    // устанавливаем цену 
-    set price(value:number | null) {
-        const price = value || 0;
-        this.setText(this.cardPrice, `${price} синапсов`);
-    }
-
-    // устанавливаем id продукта 
-    set id (value:string) {
-       this.cardId = value;
     }
 
     
