@@ -144,6 +144,7 @@ events.on('card:delete', (item: IProduct) => {
 
 // открытия формы способа оплаты и адресса доставки 
 events.on('order:open',() => {
+  formModel.setOrderField('payment', null);
   formModel.setOrderField('address', '');
   modal.render({
     content: order.render({

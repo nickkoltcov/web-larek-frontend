@@ -39,8 +39,8 @@ export class FormModel {
       this.setPaymethod(value as PayMethod)
     } else {
     this.order[field] = value;
-   }
-   this.validateOrder()
+    }
+    this.validateOrder()
   }
 
   setPaymethod(method: PayMethod ) {
