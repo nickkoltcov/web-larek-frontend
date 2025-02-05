@@ -144,9 +144,10 @@ events.on('card:delete', (item: IProduct) => {
 
 // открытия формы способа оплаты и адресса доставки 
 events.on('order:open',() => {
+  formModel.setOrderField('address', '');
   modal.render({
     content: order.render({
-      payment: 'online',
+      payment: null,
       address: '',
       valid: false,
       errors: []
@@ -157,6 +158,8 @@ events.on('order:open',() => {
 
 // открытия формы контактных данных 
 events.on('order:submit',() =>{
+  formModel.setContactField('phone', '');
+  formModel.setContactField('email', '');
   modal.render({
     content: contacts.render({
       phone:'',

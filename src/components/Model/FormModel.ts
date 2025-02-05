@@ -54,7 +54,7 @@ export class FormModel {
       errors.payment = 'Необходимо выбрать способ оплаты ';
     }
     if (!this.order.address) {
-      errors.address = 'Необходимо указать телефон';
+      errors.address = 'Необходимо указать адрес';
     }
     this.formErrors = errors;
     this.events.emit('formErrors:change', this.formErrors);
