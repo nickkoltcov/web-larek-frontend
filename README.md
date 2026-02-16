@@ -17,6 +17,11 @@
 - src/utils/constants.ts — файл с константами
 - src/utils/utils.ts — файл с утилитами
 
+
+## Демо
+
+GitHub Pages: https://nickkoltcov.github.io/web-larek-frontend/
+
 ## Установка и запуск
 Для установки и запуска проекта необходимо выполнить команды
 
